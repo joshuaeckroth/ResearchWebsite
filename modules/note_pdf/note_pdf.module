@@ -49,25 +49,35 @@ function note_pdf_tab_form($form_state, &$node) {
 function note_pdf_tab_form_submit($form, &$form_state) {
   global $base_url;
 
-  $node = $form_state['values']['node'];
+  $node = node_build_content($form_state['values']['node'], FALSE, FALSE);
+  $content = drupal_render($node->content);
+  $node->body = $content;
+  unset($node->teaser);
+  node_invoke_nodeapi($node, 'alter', FALSE, FALSE);
 
   $uid = $node->uid;
   $result = db_query("SELECT title FROM {node} n WHERE n.type = 'uprofile' AND n.uid = %d", $uid);
   $author = db_fetch_object($result);
 
-  $tex = file_destination(file_create_path(file_directory_temp() . '/' . $node->nid . ".tex"),
+  $path = drupal_get_path_alias('node/'.$node->nid, isset($node->language) ? $node->language : '');
+  $path = preg_replace('/\//', '--', $path);
+
+  $tex = file_destination(file_create_path(file_directory_temp() . '/' . $path . ".tex"),
                           FILE_EXISTS_RENAME);
   $pdf = preg_replace('/\.tex$/', '.pdf', $tex);
 
   $tex_handle = fopen($tex, "w");
   fwrite($tex_handle, '\documentclass{article}');
-  fwrite($tex_handle, '\usepackage[colorlinks=false,pdftex,pdfborder={0 0 0},pdfauthor={'.$author->title.'},pdftitle={'.$node->title.'}]{hyperref}');
+  fwrite($tex_handle, '\usepackage[colorlinks=false,pdftex,pdfborder={0 0 0},pdfauthor={'.
+    $author->title.'},pdftitle={'.$node->title.'}]{hyperref}');
   fwrite($tex_handle, '\usepackage[margin=1in]{geometry}');
   fwrite($tex_handle, '\usepackage{palatino}');
   fwrite($tex_handle, '\usepackage{setspace}\doublespacing');
+  fwrite($tex_handle, '\setlength{\parindent}{0em}');
+  fwrite($tex_handle, '\setlength{\parskip}{1em}');
   fwrite($tex_handle, '\title{'.$node->title.'}');
   fwrite($tex_handle, '\author{'.$author->title.'}');
-  fwrite($tex_handle, '\date{'.format_date($node->changed, 'custom', 'F n, Y').'}');
+  fwrite($tex_handle, '\date{'.format_date($node->changed, 'custom', 'F j, Y').'}');
   fwrite($tex_handle, '\begin{document}');
 
   fwrite($tex_handle, '\maketitle ');
@@ -76,16 +86,25 @@ function note_pdf_tab_form_submit($form, &$form_state) {
   $body = preg_replace('/&nbsp;/', ' ', $body);
   $body = preg_replace('/<p>/', "\n\n", $body);
   $body = preg_replace('/<\/p>/', "\n\n", $body);
+  $body = preg_replace('/<br.*?>/', "\\\\\\\\", $body);
   $body = preg_replace('/<strong>(.*?)<\/strong>/', '\textbf{$1}', $body);
   $body = preg_replace('/<em>(.*?)<\/em>/', '\emph{$1}', $body);
   $body = preg_replace('/<blockquote>/', '\begin{quote}', $body);
   $body = preg_replace('/<\/blockquote>/', '\end{quote}', $body);
+  $body = preg_replace('/<ul>/', '\begin{itemize}', $body);
+  $body = preg_replace('/<\/ul>/', '\end{itemize}', $body);
+  $body = preg_replace('/<ol>/', '\begin{enumerate}', $body);
+  $body = preg_replace('/<\/ol>/', '\end{enumerate}', $body);
+  $body = preg_replace('/<li>(.*?)<\/li>/', '\item {$1}', $body);
   $body = preg_replace_callback('/<a href="(.*?)">(.*?)<\/a>/', 'href_to_hyperref', $body);
   $body = preg_replace("/(\s)'(\\S)/", '$1`$2', $body);
   $body = preg_replace('/(\s)"(\S)/', '$1``$2', $body);
   $body = preg_replace('/(\S)"/', "\$1''", $body);
   $body = preg_replace('/\|/', '$|$', $body);
   $body = preg_replace('/\x{00E0}/u', "\\`{a}", $body);
+  $body = preg_replace('/<!--(.*?)-->/', '', $body);
+  $body = preg_replace('/&amp;/', '\&', $body);
+  $body = preg_replace('/%/', '\%', $body);
 
   fwrite($tex_handle, $body);
   fwrite($tex_handle, '\end{document}');
