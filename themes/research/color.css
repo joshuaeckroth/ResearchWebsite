@@ -1,0 +1,112 @@
+body
+{
+  color: #000000;
+}
+
+a:link, a:visited
+{
+  color: #3a89c9;
+}
+
+tr.even, tr.odd, td.active {
+  border-bottom: 1px solid #a8a8a8;
+  border-top: 1px solid #a8a8a8;
+  background: #ffffff;
+}
+
+fieldset
+{
+  border: 1px solid #a8a8a8;
+}
+
+input
+{
+  color: #3a89c9;
+  border: 1px solid #a8a8a8;
+  background: #ffffff;
+}
+
+select, textarea
+{
+  color: #000000;
+  background: #ffffff;
+  border: 1px solid #a8a8a8;
+}
+
+pre, hr, .comment
+{
+  border: 1px solid #a8a8a8;
+}
+
+li a.active
+{
+  color: #3a89c9;
+  border-bottom: 1px dashed #a8a8a8;
+}
+
+form tbody
+{
+  border-top: 1px solid #a8a8a8;
+}
+
+form th, form tbody th, form thead th
+{
+  border-bottom: 3px solid #a8a8a8;
+}
+
+ul.nice-menu ul, ul.nice-menu ul ul,
+div.biblio-separator-bar
+{
+  border: 1px solid #a8a8a8;
+}
+
+span.node-log
+{
+  color: #a8a8a8;
+}
+
+span.node-updated-new,
+span.node-updated-new span.marker
+{
+  color: #000000;
+}
+
+#autocomplete
+{
+  background: white;
+  border: 1px solid #a8a8a8;
+}
+
+#autocomplete li
+{
+  color: #3a89c9;
+}
+
+#autocomplete li.selected
+{
+  background: white;
+  color: #3a89c9;
+}
+
+div.tabs ul.primary li.active a:hover
+{
+  border-bottom: 1px dashed #a8a8a8;
+}
+
+div.block-inner h2
+{
+  background: #a8a8a8;
+  color: #ffffff;
+}
+
+#user-profile h2.pane-title
+{
+  background: #a8a8a8;
+  color: #ffffff;
+}
+
+span.gray-teaser
+{
+  color: #a8a8a8;
+}
+

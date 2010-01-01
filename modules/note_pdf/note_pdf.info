@@ -1,0 +1,3 @@
+name = Note PDF
+description = Export a note as a PDF
+core = 6.x

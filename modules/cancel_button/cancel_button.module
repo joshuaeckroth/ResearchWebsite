@@ -1,0 +1,13 @@
+<?php
+
+function cancel_button_form_alter(&$form, $form_state, $form_id)
+{
+  if($form['#id'] == 'node-form') {
+    $form['buttons']['cancel'] =
+      array(
+	    '#type' => 'markup',
+	    '#value' => l(t('Cancel'), referer_uri()),
+	    '#weight' => 20,
+	    );
+  }
+}

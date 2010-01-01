@@ -1,0 +1,3 @@
+name = Cancel Button
+description = Provides a cancel button on node editing and creation.
+core = 6.x

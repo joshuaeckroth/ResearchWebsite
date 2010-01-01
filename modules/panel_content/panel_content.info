@@ -1,0 +1,3 @@
+name = Panel Content
+description = Provides special features for "panel content" nodes
+core = 6.x

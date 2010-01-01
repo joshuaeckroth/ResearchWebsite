@@ -1,0 +1,112 @@
+<?php
+
+/**
+ * Valid permissions for this module
+ * @return array An array of valid permissions
+ */
+function note_pdf_perm() {
+  return array('download pdf');
+}
+
+function note_pdf_menu() {
+  $items['node/%node/pdf'] = array(
+    'title' => 'PDF',
+    'page callback' => 'note_pdf_tab_page',
+    'page arguments' => array(1),
+    'access callback' => 'note_pdf_tab_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+function note_pdf_tab_access($node = NULL) {
+  if($node->type == 'page')
+    return TRUE;
+  return FALSE;
+}
+
+function note_pdf_tab_page($node = NULL) {
+  drupal_set_title(t('PDF export of %title', array('%title' => $node->title)));
+
+  $output = drupal_get_form('note_pdf_tab_form', $node);
+  return $output;
+}
+
+function note_pdf_tab_form($form_state, &$node) {
+  $form['#tab'] = TRUE;
+  $form['node'] = array(
+    '#type' => 'value',
+    '#value' => $node,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Download PDF')
+  );
+  return $form;
+}
+
+function note_pdf_tab_form_submit($form, &$form_state) {
+  global $base_url;
+
+  $node = $form_state['values']['node'];
+
+  $uid = $node->uid;
+  $result = db_query("SELECT title FROM {node} n WHERE n.type = 'uprofile' AND n.uid = %d", $uid);
+  $author = db_fetch_object($result);
+
+  $tex = file_destination(file_create_path(file_directory_temp() . '/' . $node->nid . ".tex"),
+                          FILE_EXISTS_RENAME);
+  $pdf = preg_replace('/\.tex$/', '.pdf', $tex);
+
+  $tex_handle = fopen($tex, "w");
+  fwrite($tex_handle, '\documentclass{article}');
+  fwrite($tex_handle, '\usepackage[colorlinks=false,pdftex,pdfborder={0 0 0},pdfauthor={'.$author->title.'},pdftitle={'.$node->title.'}]{hyperref}');
+  fwrite($tex_handle, '\usepackage[margin=1in]{geometry}');
+  fwrite($tex_handle, '\usepackage{palatino}');
+  fwrite($tex_handle, '\usepackage{setspace}\doublespacing');
+  fwrite($tex_handle, '\title{'.$node->title.'}');
+  fwrite($tex_handle, '\author{'.$author->title.'}');
+  fwrite($tex_handle, '\date{'.format_date($node->changed, 'custom', 'F n, Y').'}');
+  fwrite($tex_handle, '\begin{document}');
+
+  fwrite($tex_handle, '\maketitle ');
+
+  $body = $node->body;
+  $body = preg_replace('/&nbsp;/', ' ', $body);
+  $body = preg_replace('/<p>/', "\n\n", $body);
+  $body = preg_replace('/<\/p>/', "\n\n", $body);
+  $body = preg_replace('/<strong>(.*?)<\/strong>/', '\textbf{$1}', $body);
+  $body = preg_replace('/<em>(.*?)<\/em>/', '\emph{$1}', $body);
+  $body = preg_replace('/<blockquote>/', '\begin{quote}', $body);
+  $body = preg_replace('/<\/blockquote>/', '\end{quote}', $body);
+  $body = preg_replace_callback('/<a href="(.*?)">(.*?)<\/a>/', 'href_to_hyperref', $body);
+  $body = preg_replace("/(\s)'(\\S)/", '$1`$2', $body);
+  $body = preg_replace('/(\s)"(\S)/', '$1``$2', $body);
+  $body = preg_replace('/(\S)"/', "\$1''", $body);
+  $body = preg_replace('/\|/', '$|$', $body);
+  $body = preg_replace('/\x{00E0}/u', "\\`{a}", $body);
+
+  fwrite($tex_handle, $body);
+  fwrite($tex_handle, '\end{document}');
+
+  exec('pdflatex -output-directory /tmp ' . $tex);
+  
+  $file = basename($pdf);
+
+  $headers[] = "Content-Type: application/pdf";
+  $headers[] = "Content-Disposition: attachment; filename=\"".$file."\"";
+
+  file_transfer($pdf, $headers);
+}
+
+function href_to_hyperref($matches)
+{
+  global $base_url;
+
+  if(substr($matches[1], 0, 1) == "/") {
+    return '\href{'.$base_url.$matches[1].'}{'.$matches[2].'}';
+  } else {
+    return '\href{'.$matches[1].'}{'.$matches[2].'}';
+  }
+}

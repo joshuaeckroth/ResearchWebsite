@@ -1,0 +1,99 @@
+/* $Id: tabs.css,v 1.2 2008/09/08 02:35:29 johnalbin Exp $ */
+
+/*
+ * Tabs CSS
+ *
+ * Adds styles for the primary and secondary tabs.
+ *
+ * Compare this with default CSS found in the system module's stylesheet (a copy
+ * of which is in drupal6-reference.css, line 510.)
+ *
+ */
+
+  div.tabs
+  {
+  }
+
+  div.tabs ul.primary
+  {
+    border: none;
+    margin: 1em 0;
+    padding: 0 0 0 2em;
+    border-bottom: none;
+    list-style-type: none;
+    list-style-image: none;
+  }
+
+  div.tabs ul.primary li
+  {
+    display: list-item;
+    margin: 0.5em 0 0.5em 0;
+    padding-left: 0.5em;
+    text-indent: -0.5em;
+    line-height: 1.2em;
+    list-style-type: square;
+    list-style-image: none;
+  }
+
+  div.tabs ul.primary li a
+  {
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  ul.primary li a .tab
+  {
+  }
+
+  div.tabs ul.primary li a:hover
+  {
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  ul.primary li a:hover .tab
+  {
+  }
+
+  div.tabs ul.primary li.active a,
+  div.tabs ul.primary li.active a:hover
+  {
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  ul.primary li.active a .tab,
+  ul.primary li.active a:hover .tab
+  {
+  }
+
+  ul.secondary
+  {
+  }
+
+  ul.secondary li
+  {
+  }
+
+  ul.secondary a
+  {
+  }
+
+  ul.secondary a .tab
+  {
+  }
+
+  ul.secondary a:hover
+  {
+  }
+
+  ul.secondary a.active,
+  ul.secondary a.active:hover
+  {
+  }

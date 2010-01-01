@@ -1,0 +1,24 @@
+<?php
+
+function panel_content_block($op = 'list', $delta = 0, $edit = array()) {
+  if ($op == 'list') {
+    $blocks[0] = array('info' => t("Panel Content"),
+      'weight' => 0, 'status' => 1, 'region' => 'right');
+    return $blocks;
+  }
+  else if ($op == 'view') {
+    switch($delta) {
+      case 0:
+        $panel_nid = arg(1);
+        $panel_node = node_load($panel_nid);
+        $panel_title = $panel_node->title;
+        $block = array('subject' => $panel_title,
+           'content' => t("Return to <a href=\"!url\">!title</a>",
+             array('!url' => url("node/".$panel_nid),
+               '!title' => $panel_title)));
+        break;
+    }
+    return $block;
+  }
+}
+
