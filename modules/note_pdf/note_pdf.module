@@ -105,10 +105,12 @@ function note_pdf_tab_form_submit($form, &$form_state) {
   }
   sort($bibentries);
 
-  $body .= "<p><strong>References</strong></p>";
-  $body .= "\\raggedright\n";
-  $body .= "\\leftskip 1em\n\\parindent -1em\n";
-  $body .= implode("\n\n", $bibentries);
+  if(count($bibentries) > 0) {
+    $body .= "<p><strong>References</strong></p>";
+    $body .= "\\raggedright\n";
+    $body .= "\\leftskip 1em\n\\parindent -1em\n";
+    $body .= implode("\n\n", $bibentries);
+  }
 
   $body = preg_replace('/&nbsp;/', ' ', $body);
   $body = preg_replace('/<p>/', "\n\n", $body);
