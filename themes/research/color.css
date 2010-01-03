@@ -93,9 +93,15 @@ div.tabs ul.primary li.active a:hover
   border-bottom: 1px dashed #a8a8a8;
 }
 
-div.block-inner h2
+body.public div.block-inner h2, div.block-inner h2
 {
   background: #a8a8a8;
+  color: #ffffff;
+}
+
+body.private div.block-inner h2
+{
+  background: #d7b267;
   color: #ffffff;
 }
 

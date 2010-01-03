@@ -1,0 +1,27 @@
+<?php
+
+function access_control_context_context_conditions() {
+  $items = array();
+
+  $items['access'] = array(
+    '#title' => t('Access Control'),
+    '#description' => t('Set this context when a node has a particular Access Control setting.'),
+    '#options' => array('access_control_context_public' => t('Public'),
+                'access_control_context_private' => t('Private')),
+    '#type' => 'radios',
+  );
+
+  return $items;
+}
+
+function access_control_context_nodeapi(&$node, $op, $teaser, $page) {
+  if ($op == 'view' && $page && arg(0) == 'node') {
+    if (module_exists('content_access')) {
+      if(in_array(DRUPAL_ANONYMOUS_RID, content_access_per_node_setting('view', $node)))
+        context_set_by_condition('access', 'access_control_context_public');
+      else
+        context_set_by_condition('access', 'access_control_context_private');
+    }
+  }
+}
+

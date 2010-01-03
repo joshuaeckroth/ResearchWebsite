@@ -1,0 +1,6 @@
+name = Access Control Context
+description = Provide a Context condition based on a node's Access Control settings
+core = 6.x
+package = Research Website
+dependencies[] = context
+dependencies[] = content_access
