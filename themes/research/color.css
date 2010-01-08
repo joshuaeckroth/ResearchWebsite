@@ -116,3 +116,8 @@ span.gray-teaser
   color: #a8a8a8;
 }
 
+code
+{
+  border-bottom: 1px dotted #a8a8a8;
+}
+

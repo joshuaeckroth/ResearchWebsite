@@ -1014,3 +1014,6 @@ div.content-profile-display
   min-width: 0;
 }
 
+div.panel-pane {
+  padding: 5px;
+}

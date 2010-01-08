@@ -46,7 +46,8 @@
 /* Hide sidebars and nav elements */
   #skip-to-nav, #navbar, #sidebar-left, #sidebar-right, #footer,
   .breadcrumb, div.tabs, .links, .taxonomy,
-  .book-navigation, .forum-topic-navigation, .pager, .feed-icons, .terms
+  .book-navigation, .forum-topic-navigation, .pager, .feed-icons, .terms,
+  .field-field-note-summarizes
   {
     visibility: hidden;
     display: none;
