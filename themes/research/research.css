@@ -999,7 +999,7 @@
   line-height: 1.3em;
 }
 
-.graphviz
+.graphviz, .center
 {
   text-align: center;
 }
@@ -1016,4 +1016,8 @@ div.content-profile-display
 
 div.panel-pane {
   padding: 5px;
+}
+
+div.dev-query, div.devel-querylog {
+  clear: both;
 }
