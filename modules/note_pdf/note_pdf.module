@@ -214,11 +214,14 @@ function note_pdf_tab_form_submit($form, &$form_state) {
   $body = preg_replace("/(\\s)(?:'|&#039;)(\\S)/", '$1`$2', $body);
   $body = preg_replace("/&#0?39;(\"|&quot;)/", "' ''", $body);
   $body = preg_replace('/&#0?39;/', "'", $body); 
-  $body = preg_replace('/(\s)(?:"|&quot;)(\S)/', '$1``$2', $body);
+  $body = preg_replace('/(\s|\{)(?:"|&quot;)(\S)/', '$1``$2', $body);
+  $body = preg_replace('/^(?:"|&quot;)(\S)/', '``$1', $body);
   $body = preg_replace('/(\S)(?:"|&quot;)/', "\$1''", $body);
   $body = preg_replace('/\|/', '$|$', $body);
   $body = preg_replace('/\x{00E0}/u', "\\`{a}", $body);
   $body = preg_replace('/&agrave;/', "\\`{a}", $body);
+  $body = preg_replace('/\x{00FC}/u', '\"{u}', $body);
+  $body = preg_replace('/\x{00F6}/u', '\"{o}', $body);
   $body = preg_replace('/\x{2013}/u', '--', $body);
   $body = preg_replace('/\x{2014}/u', '---', $body);
   $body = preg_replace('/<!--(.*?)-->/s', '', $body);
